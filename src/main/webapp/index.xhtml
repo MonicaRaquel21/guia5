@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+     <h:head>
+       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+             integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+            
+        </link>
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" 
+             integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+            
+        </link>
+        
+        <title>Index JSF</title>
+    </h:head>
+    
+   <h:body>
+        <div class="container">
+            <h:form id="authorForm">
+                <div id="card">
+                <div class="card-header">
+                    Authors Form
+                </div>
+                <div class="card-body">
+                    
+                <div class="form-group">
+                    <label for="authorForm:authorName">Author Name</label>
+                    <h:inputText id="authorName" value="#{authorBean.author.authorName}"
+                                 required="true" requiredMessage="Ingrese nombre del autor"
+                         class="form-control">
+                        
+                        <f:ajax event="blur"
+                                listener="#{authorBean.countAuthor(authorBean.author.authorName)}"
+                                render="@form" />
+                    </h:inputText>    
+                </div>
+                    
+                     <div class="form-group">
+                         <label for="authorForm:authorBirth">Birth</label>
+                    <h:inputText id="authorBirth" value="#{authorBean.author.authorBirth}"
+                                 required="true" requiredMessage="Ingrese fecha de nacimiento"
+                         class="form-control">
+                        
+                        <f:convertDateTime pattern="dd/MM/yy"/>
+                    </h:inputText>    
+                </div>
+                    
+                    <div class="form-group">
+                         <label for="authorForm:authorNumber">Number</label>
+                    <h:inputText id="authorNumber" value="#{authorBean.author.authorNumber}"
+                                 required="true" requiredMessage="Ingrese un numero de telefono"
+                         class="form-control">
+                        
+                        <f:validator validatorId="sv.edu.udb.autores.util.SVPhoneValidator"/>
+                    </h:inputText>    
+                </div>
+                    
+                    <div class="form-group">
+                         <label for="authorForm:genre">Genre</label>
+                    <h:selectOneMenu id="genre" value="#{authorBean.author.literaryGenre}"
+                         class="form-control">
+                        <f:selectItems value="#{authorBean.literaryGenreModel.literaryGenre}"
+                                       var="1" itemLabel="#1.name" itemValue="{1.id}"/>
+                        
+                        </h:selectOneMenu>
+                        
+                </div>
+                    
+                    
+                </div>
+                
+                <div class="card-footer">
+                    <h:commandButton value="Agregar" action="#{authorBean.addAuthor()}"
+                                     class="btn btn-primary center-block">
+                        <f:ajax execute="@form" render="authorsTable authorForm datatableauthors"
+                                resetValues="true"/>
+                    
+                    </h:commandButton>
+                </div>
+               </div>
+       
+            <h:messages id="successMessage" infoStyle="color:darkgreen" errorStyle="color:darkred"/>
+            <h:messages id="errorMessage" infoStyle="color:darkgreen" globalOnly="true" errorStyle="color:darkred"/>
+       
+        </h:form>
+
+            
+            <h:form id="datatablesauthors">
+                <div class="card">
+                    <div class="card-body">
+                        <h:dataTable id="authorsTable" value="#{authorBean.authorModel.authors}"
+                            var="c" styleClass="table table-striped">
+                            
+                            <h:column>
+                                <f:facet name="header"> 
+                                    Author ID
+                                    
+                                </f:facet>
+                                #{c.authorId}
+                            </h:column>
+                            
+                             <h:column>
+                                <f:facet name="header"> 
+                                    Author Name
+                                    
+                                </f:facet>
+                                #{c.authorName}
+                            </h:column>
+                            
+                             <h:column>
+                                <f:facet name="header"> 
+                                   Phone Number
+                                    
+                                </f:facet>
+                                #{c.authorNumber}
+                            </h:column>
+                            
+                             <h:column>
+                                <f:facet name="header"> 
+                                  
+                                    Date Birth
+                                    
+                                </f:facet>
+                                 <h:outputText   value="#{c.authorBirth}">
+                                     <f:convertDateTime pattern="dd/MM/yyy"/>
+                                 </h:outputText>
+                            </h:column>
+                            
+                             <h:column>
+                                <f:facet name="header"> 
+                                   Literary Genre
+                                    
+                                </f:facet>
+                                #{c.literaryGenre}
+                            </h:column>
+                            
+                             <h:column>
+                                <f:facet name="header"> 
+                                    Operations 
+                                    
+                                </f:facet>
+                                 <h:commandButton action="#authorBean.deleteAuthor(c)" onclick="if (! confirm('¿Esta seguro que desea eliminar este registro'))
+                                     return false" value="Delete" class = "btn btn-primary">
+                                     
+                                 </h:commandButton>
+                                 
+                                 <h:commandButton action="#{authorBean.edit(c)}" value = "Update" class = "btn btn-primary" >  
+                                 </h:commandButton>
+                                 
+                            </h:column>
+                        
+                        </h:dataTable >
+                        
+                    </div>
+                    
+                </div>
+                
+            </h:form>
+           
+        </div>
+           
+            
+   </h:body>
+</html>
